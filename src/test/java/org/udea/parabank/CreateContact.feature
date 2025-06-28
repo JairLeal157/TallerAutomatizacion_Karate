@@ -3,18 +3,19 @@ Feature: create contact to app contact
 
   Background:
     * url baseUrl
-    * header Accept = 'application/json'
+    * header Accept = acceptHeader
+
 Scenario: Login y crear contacto
   # Login
-  Given path '/users/login'
-  And request { "email": "pruebasudea@test.com", "password": "12345678" }
+  Given path loginEndpoint
+  And request { "email": "#(userEmail)", "password": "#(userPassword)" }
   When method POST
   Then status 200
   * def authToken = response.token
 
   # Crear contacto
-  Given path '/contacts'
+  Given path contactsEndpoint
   And header Authorization = 'Bearer ' + authToken
-  And request { "firstName": "Pruebas", "lastName": "UDEA", "birthdate": "1970-01-01", "email": "jdoe@fake.com", "phone": "8005555555", "street1": "1 Main St.", "street2": "Apartment A", "city": "Anytown", "stateProvince": "KS", "postalCode": "12345", "country": "USA" }
+  And request contactData
   When method POST
   Then status 201
